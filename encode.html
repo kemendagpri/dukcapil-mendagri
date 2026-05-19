@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Encoder/Decoder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #718096;
+        }
+
+        .method-selector {
+            margin-bottom: 30px;
+        }
+
+        .method-btn {
+            padding: 12px 24px;
+            margin: 5px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .method-btn:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .method-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .text-area-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .text-area-wrapper label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-custom {
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-encode {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-encode:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-decode {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .btn-decode:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-clear {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-clear:hover {
+            background: #cbd5e0;
+        }
+
+        .alert-custom {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-box {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .info-box h5 {
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .info-box ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #4a5568;
+        }
+
+        .info-box li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="main-card">
+            <div class="header">
+                <h1><i class="fas fa-code"></i> HTML Encoder/Decoder</h1>
+                <p>Encode atau decode HTML code Anda dengan berbagai metode</p>
+            </div>
+
+            <div class="method-selector">
+                <label class="d-block mb-3" style="font-weight: 600; color: #2d3748;">
+                    <i class="fas fa-cog"></i> Pilih Metode Encoding:
+                </label>
+                <button class="method-btn active" data-method="base64">
+                    <i class="fas fa-lock"></i> Base64
+                </button>
+                <button class="method-btn" data-method="hex">
+                    <i class="fas fa-hashtag"></i> Hexadecimal
+                </button>
+                <button class="method-btn" data-method="uri">
+                    <i class="fas fa-link"></i> URI Component
+                </button>
+                <button class="method-btn" data-method="html-entities">
+                    <i class="fas fa-code"></i> HTML Entities
+                </button>
+            </div>
+
+            <div class="text-area-wrapper">
+                <label><i class="fas fa-file-code"></i> Input (Code Original):</label>
+                <textarea id="inputText" placeholder="Paste HTML code Anda di sini..."></textarea>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-custom btn-encode" onclick="encodeText()">
+                    <i class="fas fa-lock"></i> Encode
+                </button>
+                <button class="btn-custom btn-decode" onclick="decodeText()">
+                    <i class="fas fa-unlock"></i> Decode
+                </button>
+                <button class="btn-custom btn-copy" onclick="copyOutput()">
+                    <i class="fas fa-copy"></i> Copy Output
+                </button>
+                <button class="btn-custom btn-clear" onclick="clearAll()">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+
+            <div class="text-area-wrapper">
+                <label><i class="fas fa-file-export"></i> Output (Code Ter-encode/Decode):</label>
+                <textarea id="outputText" placeholder="Hasil akan muncul di sini..." readonly></textarea>
+            </div>
+
+            <div id="alertBox" class="alert-custom"></div>
+
+            <div class="info-box">
+                <h5><i class="fas fa-info-circle"></i> Informasi Metode Encoding:</h5>
+                <ul>
+                    <li><strong>Base64:</strong> Encoding standar yang aman, cocok untuk menyimpan data dalam format
+                        teks. Paling umum digunakan.</li>
+                    <li><strong>Hexadecimal:</strong> Mengkonversi setiap karakter ke format hex (0-9, A-F). Bagus untuk
+                        debugging.</li>
+                    <li><strong>URI Component:</strong> Encoding untuk URL, mengubah karakter khusus menjadi format %XX.
+                    </li>
+                    <li><strong>HTML Entities:</strong> Mengubah karakter HTML khusus menjadi entities (&lt;, &gt;,
+                        &amp;, dll).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMethod = 'base64';
+
+        // Method selector
+        document.querySelectorAll('.method-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentMethod = this.getAttribute('data-method');
+            });
+        });
+
+        function encodeText() {
+            const input = document.getElementById('inputText').value;
+            if (!input) {
+                showAlert('Mohon masukkan text untuk di-encode!', 'warning');
+                return;
+            }
+
+            let output = '';
+            try {
+                switch (currentMethod) {
+                    case 'base64':
+                        output = btoa(unescape(encodeURIComponent(input)));
+                        break;
+                    case 'hex':
+                        output = Array.from(input).map(c =>
+                            c.charCodeAt(0).toString(16).padStart(2, '0')
+                        ).join('');
+                        break;
+                    case 'uri':
+                        output = encodeURIComponent(input);
+                        break;
+                    case 'html-entities':
+                        output = input.replace(/[&<>"']/g, function (m) {
+                            const entities = {
+                                '&': '&amp;',
+                                '<': '&lt;',
+                                '>': '&gt;',
+                                '"': '&quot;',
+                                "'": '&#39;'
+                            };
+                            return entities[m];
+                        });
+                        break;
+                }
+                document.getElementById('outputText').value = output;
+                showAlert('Berhasil di-encode dengan metode ' + currentMethod.toUpperCase() + '!', 'success');
+            } catch (e) {
+                showAlert('Error: ' + e.message, 'danger');
+            }
+        }
+
+        function decodeText() {
+            const input = document.getElementById('inputText').value;
+            if (!input) {
+                showAlert('Mohon masukkan text untuk di-decode!', 'warning');
+                return;
+            }
+
+            let output = '';
+            try {
+                switch (currentMethod) {
+                    case 'base64':
+                        output = decodeURIComponent(escape(atob(input)));
+                        break;
+                    case 'hex':
+                        output = input.match(/.{1,2}/g).map(byte =>
+                            String.fromCharCode(parseInt(byte, 16))
+                        ).join('');
+                        break;
+                    case 'uri':
+                        output = decodeURIComponent(input);
+                        break;
+                    case 'html-entities':
+                        const textarea = document.createElement('textarea');
+                        textarea.innerHTML = input;
+                        output = textarea.value;
+                        break;
+                }
+                document.getElementById('outputText').value = output;
+                showAlert('Berhasil di-decode dengan metode ' + currentMethod.toUpperCase() + '!', 'success');
+            } catch (e) {
+                showAlert('Error: ' + e.message, 'danger');
+            }
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('outputText');
+            if (!output.value) {
+                showAlert('Tidak ada output untuk di-copy!', 'warning');
+                return;
+            }
+            output.select();
+            document.execCommand('copy');
+            showAlert('Output berhasil di-copy ke clipboard!', 'success');
+        }
+
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+            showAlert('Semua field berhasil di-clear!', 'info');
+        }
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            const colors = {
+                'success': '#10b981',
+                'danger': '#ef4444',
+                'warning': '#f59e0b',
+                'info': '#3b82f6'
+            };
+            alertBox.style.backgroundColor = colors[type] + '20';
+            alertBox.style.color = colors[type];
+            alertBox.style.borderLeft = '4px solid ' + colors[type];
+            alertBox.innerHTML = '<strong>' + message + '</strong>';
+            alertBox.style.display = 'block';
+
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
